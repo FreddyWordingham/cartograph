@@ -3,30 +3,26 @@
 use arctk::{
     args,
     file::{Build, Load, Redirect},
-    geom::{GridBuilder, Mesh, MeshBuilder, Tree, TreeBuilder},
+    geom::{Mesh, MeshBuilder, Tree, TreeBuilder},
     ord::Set,
     util::{banner, dir},
 };
 use arctk_attr::input;
-use cartographer::input::Settings;
+use cartographer::{
+    input::Settings,
+    parts::{Interface, Landscape},
+    util::Key,
+};
 use std::{
     env::current_dir,
     path::{Path, PathBuf},
 };
-
-/// Key type.
-type Key = String;
-
-/// Interface type.
-type Interface = (Key, Key);
 
 // Input parameters.
 #[input]
 struct Parameters {
     /// Adaptive mesh settings.
     tree: Redirect<TreeBuilder>,
-    /// Grid sampling settings.
-    grid: Redirect<GridBuilder>,
     /// Render runtime settings.
     sett: Redirect<Settings>,
     /// Surfaces set.
@@ -42,9 +38,16 @@ pub fn main() {
     banner::title("CARTOGRAPHER", term_width);
     let (params_path, in_dir, _out_dir) = init(term_width);
     let params = input(term_width, &in_dir, &params_path);
-    let (tree_sett, grid_sett, map_sett, surfs, inters) = build(term_width, &in_dir, params);
+    let (tree_sett, map_sett, surfs, inters) = build(term_width, &in_dir, params);
     let tree = grow(term_width, tree_sett, &surfs);
     let input = Landscape::new(&tree, &map_sett, &surfs, &inters);
+
+    banner::section("Mapping", term_width);
+    // let output = multi_thread(&input, &shader, &cam).expect("Failed to perform rendering.");
+    // output
+    //     .img
+    //     .save(&out_dir.join("render.png"))
+    //     .expect("Failed to save output data.");
 
     banner::section("Finished", term_width);
 }
@@ -84,13 +87,7 @@ fn build(
     term_width: usize,
     in_dir: &Path,
     params: Parameters,
-) -> (
-    TreeBuilder,
-    Settings,
-    GridBuilder,
-    Set<Key, Mesh>,
-    Set<Key, Interface>,
-) {
+) -> (TreeBuilder, Settings, Set<Key, Mesh>, Set<Key, Interface>) {
     banner::section("Building", term_width);
     banner::sub_section("Adaptive Tree Settings", term_width);
     let tree_sett = params
@@ -103,12 +100,6 @@ fn build(
         .sett
         .build(in_dir)
         .expect("Failed to redirect map settings.");
-
-    banner::sub_section("Grid Sampling Settings", term_width);
-    let grid_sett = params
-        .grid
-        .build(in_dir)
-        .expect("Failed to redirect grid sampling settings.");
 
     banner::sub_section("Surfaces", term_width);
     let surfs = params
@@ -124,7 +115,7 @@ fn build(
         .build(in_dir)
         .expect("Failed to redirect interfaces set.");
 
-    (tree_sett, map_sett, grid_sett, surfs, inters)
+    (tree_sett, map_sett, surfs, inters)
 }
 
 /// Grow domains.

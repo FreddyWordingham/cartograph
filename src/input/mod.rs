@@ -1,15 +1,5 @@
-//! Mapping simulation structure.
+//! Input settings sub-module.
 
-use arctk::clone;
-use arctk_attr::input;
+pub mod settings;
 
-/// Loadable input settings structure.
-#[input]
-pub struct Settings {
-    /// Bump distance [m].
-    bump_dist: f64,
-}
-
-impl Settings {
-    clone!(bump_dist, f64);
-}
+pub use self::settings::*;
