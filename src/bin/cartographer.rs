@@ -2,8 +2,8 @@
 
 use arctk::{
     args,
-    file::Load,
-    // geom::{Mesh, MeshBuilder, Tree, TreeBuilder},
+    file::{Build, Load, Redirect},
+    geom::{Mesh, MeshBuilder, Tree, TreeBuilder},
     // math::Pos3,
     // ord::Set,
     util::{banner, dir},
@@ -21,8 +21,10 @@ use std::{
 // Input parameters.
 #[input]
 struct Parameters {
-    /// Example data.
-    x: i32,
+    /// Adaptive mesh settings.
+    tree: Redirect<TreeBuilder>,
+    // /// Render runtime settings.
+    // sett: Redirect<Settings>,
 }
 
 /// Main function.
@@ -31,7 +33,10 @@ pub fn main() {
 
     banner::title("CARTOGRAPHER", term_width);
     let (params_path, in_dir, _out_dir) = init(term_width);
-    let _params = input(term_width, &in_dir, &params_path);
+    let params = input(term_width, &in_dir, &params_path);
+    let (tree_sett) = build(term_width, &in_dir, params);
+
+    banner::section("Finished", term_width);
 }
 
 /// Initialise the command line arguments and directories.
@@ -61,4 +66,17 @@ fn input(term_width: usize, in_dir: &Path, params_path: &Path) -> Parameters {
     let path = in_dir.join(params_path);
 
     Parameters::load(&path).expect("Failed to load parameters file.")
+}
+
+/// Build instances.
+#[allow(clippy::type_complexity)]
+fn build(term_width: usize, in_dir: &Path, params: Parameters) -> (TreeBuilder) {
+    banner::section("Building", term_width);
+    banner::sub_section("Adaptive Tree Settings", term_width);
+    let tree_sett = params
+        .tree
+        .build(in_dir)
+        .expect("Failed to redirect adaptive tree settings.");
+
+    (tree_sett)
 }
