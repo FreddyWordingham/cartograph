@@ -30,3 +30,4 @@
 )]
 
 pub mod input;
+pub mod parts;
