@@ -9,11 +9,11 @@ use arctk::{
     util::{banner, dir},
 };
 use arctk_attr::input;
+use cartographer::input::Settings;
 use std::{
     env::current_dir,
     path::{Path, PathBuf},
 };
-// use cartographer::{};
 
 // // Key type.
 // type Key = String;
@@ -23,8 +23,8 @@ use std::{
 struct Parameters {
     /// Adaptive mesh settings.
     tree: Redirect<TreeBuilder>,
-    // /// Render runtime settings.
-    // sett: Redirect<Settings>,
+    /// Render runtime settings.
+    sett: Redirect<Settings>,
 }
 
 /// Main function.
@@ -34,7 +34,7 @@ pub fn main() {
     banner::title("CARTOGRAPHER", term_width);
     let (params_path, in_dir, _out_dir) = init(term_width);
     let params = input(term_width, &in_dir, &params_path);
-    let (tree_sett) = build(term_width, &in_dir, params);
+    let (tree_sett, map_sett) = build(term_width, &in_dir, params);
 
     banner::section("Finished", term_width);
 }
@@ -70,7 +70,7 @@ fn input(term_width: usize, in_dir: &Path, params_path: &Path) -> Parameters {
 
 /// Build instances.
 #[allow(clippy::type_complexity)]
-fn build(term_width: usize, in_dir: &Path, params: Parameters) -> (TreeBuilder) {
+fn build(term_width: usize, in_dir: &Path, params: Parameters) -> (TreeBuilder, Settings) {
     banner::section("Building", term_width);
     banner::sub_section("Adaptive Tree Settings", term_width);
     let tree_sett = params
@@ -78,5 +78,11 @@ fn build(term_width: usize, in_dir: &Path, params: Parameters) -> (TreeBuilder) 
         .build(in_dir)
         .expect("Failed to redirect adaptive tree settings.");
 
-    (tree_sett)
+    banner::sub_section("Map Settings", term_width);
+    let map_sett = params
+        .sett
+        .build(in_dir)
+        .expect("Failed to redirect map settings.");
+
+    (tree_sett, map_sett)
 }
