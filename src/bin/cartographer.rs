@@ -2,7 +2,7 @@
 
 use arctk::{
     args,
-    file::{Build, Load, Redirect},
+    file::{Build, Load, Redirect, Save},
     geom::{Mesh, MeshBuilder, Tree, TreeBuilder},
     ord::Set,
     util::{banner, dir},
@@ -37,18 +37,17 @@ pub fn main() {
     let term_width = arctk::util::term::width().unwrap_or(80);
 
     banner::title("CARTOGRAPHER", term_width);
-    let (params_path, in_dir, _out_dir) = init(term_width);
+    let (params_path, in_dir, out_dir) = init(term_width);
     let params = input(term_width, &in_dir, &params_path);
     let (tree_sett, map_sett, surfs, inters) = build(term_width, &in_dir, params);
     let tree = grow(term_width, tree_sett, &surfs);
     let input = Landscape::new(&tree, &map_sett, &surfs, &inters);
 
     banner::section("Mapping", term_width);
-    let _output = multi_thread(&input).expect("Failed to perform mapping.");
-    // output
-    //     .img
-    //     .save(&out_dir.join("render.png"))
-    //     .expect("Failed to save output data.");
+    let output = multi_thread(&input).expect("Failed to perform mapping.");
+    output
+        .save(&out_dir.join("render.png"))
+        .expect("Failed to save output data.");
 
     banner::section("Finished", term_width);
 }
