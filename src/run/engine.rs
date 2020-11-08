@@ -36,6 +36,8 @@ pub fn sample<R: Rng>(land: &Landscape, data: &mut Data, index: [usize; 3], rng:
                     .unwrap()
                     .get_mut(index)
                     .unwrap() += weight;
+
+                break;
             }
 
             println!(
@@ -50,5 +52,7 @@ pub fn sample<R: Rng>(land: &Landscape, data: &mut Data, index: [usize; 3], rng:
 #[inline]
 #[must_use]
 pub fn observe(_surfs: &Set<Key, Mesh>, _inters: &Set<Key, Interface>, _ray: Ray) -> Option<Key> {
-    None
+    use std::str::FromStr;
+    Some(Key::from_str("air").unwrap())
+    // None
 }
