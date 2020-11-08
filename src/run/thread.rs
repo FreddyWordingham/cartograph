@@ -50,6 +50,8 @@ pub fn thread(pb: &Arc<Mutex<ProgressBar>>, land: &Landscape) -> Data {
     let res = *land.sett.grid().res();
     let mut data = Data::new(land.inters, res);
 
+    println!("Hello world!");
+
     while let Some((start, end)) = {
         let mut pb = pb.lock().expect("Could not lock progress bar.");
         let b = pb.block(land.sett.block_size());
@@ -57,7 +59,7 @@ pub fn thread(pb: &Arc<Mutex<ProgressBar>>, land: &Landscape) -> Data {
         b
     } {
         for i in start as usize..end as usize {
-            let index = linear_to_three_dim(i, res);
+            let index = linear_to_three_dim(i, &res);
             super::engine::sample(land, &mut data, index);
         }
     }

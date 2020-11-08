@@ -17,16 +17,16 @@ exclude = ["docs/", "res/"]
 # window = ["minifb"]
 
 [dependencies]
-# arctk = { path = "../arctk" }
+arctk = { path = "../arctk", features = ["netcdf", "terminal_size"] }
 # arctk-attr = { path = "../arctk-attr" }
 # arctk-proc = { path = "../arctk-proc" }
-arctk = { version = "0.11.*", features = ["netcdf", "terminal_size"] }
+# arctk = { version = "0.11.*", features = ["netcdf", "terminal_size"] }
 arctk-attr = "0.2.*"
 arctk-proc = "0.2.*"
 # nalgebra = "0.23.*"
 ndarray = { version = "0.13.*", features = ["rayon"] }
 num_cpus = "1.13.*"
-# rand = "0.7.*"
+rand = "0.7.*"
 rayon = "1.5.*"
 serde = { version = "1.0.*", features = ["derive"] }
 # minifb = { version = "0.19.*", optional = true }
