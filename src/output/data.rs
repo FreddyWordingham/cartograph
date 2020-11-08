@@ -59,7 +59,14 @@ impl Data {
 
 impl AddAssign<&Self> for Data {
     #[inline]
-    fn add_assign(&mut self, _rhs: &Self) {}
+    fn add_assign(&mut self, rhs: &Self) {
+        for ((l_key, l_map), (r_key, r_map)) in
+            self.maps.mut_map().iter_mut().zip(rhs.maps.map().iter())
+        {
+            debug_assert!(l_key == r_key);
+            *l_map += r_map;
+        }
+    }
 }
 
 impl Save for Data {
