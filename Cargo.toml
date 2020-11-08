@@ -23,7 +23,6 @@ arctk = { path = "../arctk", features = ["netcdf", "terminal_size"] }
 # arctk = { version = "0.11.*", features = ["netcdf", "terminal_size"] }
 arctk-attr = "0.2.*"
 arctk-proc = "0.2.*"
-# nalgebra = "0.23.*"
 ndarray = { version = "0.13.*", features = ["rayon"] }
 num_cpus = "1.13.*"
 rand = "0.7.*"

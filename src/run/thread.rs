@@ -2,6 +2,7 @@
 
 use crate::{output::Data, parts::Landscape};
 use arctk::{err::Error, tools::linear_to_three_dim, tools::ProgressBar};
+use rand::thread_rng;
 use rayon::prelude::*;
 use std::sync::{Arc, Mutex};
 
@@ -12,7 +13,7 @@ use std::sync::{Arc, Mutex};
 #[allow(clippy::expect_used)]
 #[inline]
 pub fn multi_thread(land: &Landscape) -> Result<Data, Error> {
-    let pb = ProgressBar::new("Multi-threaded", land.sett.grid().total_cells() as u64);
+    let pb = ProgressBar::new("Multi-threaded", land.grid.total_cells() as u64);
     let pb = Arc::new(Mutex::new(pb));
 
     let threads: Vec<_> = (0..num_cpus::get()).collect();
@@ -35,7 +36,7 @@ pub fn multi_thread(land: &Landscape) -> Result<Data, Error> {
 #[inline]
 #[must_use]
 pub fn single_thread(land: &Landscape) -> Data {
-    let pb = ProgressBar::new("Single-threaded", land.sett.grid().total_cells() as u64);
+    let pb = ProgressBar::new("Single-threaded", land.grid.total_cells() as u64);
     let pb = Arc::new(Mutex::new(pb));
 
     thread(&pb, land)
@@ -47,10 +48,9 @@ pub fn single_thread(land: &Landscape) -> Data {
 #[inline]
 #[must_use]
 pub fn thread(pb: &Arc<Mutex<ProgressBar>>, land: &Landscape) -> Data {
-    let res = *land.sett.grid().res();
+    let res = *land.grid.res();
     let mut data = Data::new(land.inters, res);
-
-    println!("Hello world!");
+    let mut rng = thread_rng();
 
     while let Some((start, end)) = {
         let mut pb = pb.lock().expect("Could not lock progress bar.");
@@ -60,7 +60,7 @@ pub fn thread(pb: &Arc<Mutex<ProgressBar>>, land: &Landscape) -> Data {
     } {
         for i in start as usize..end as usize {
             let index = linear_to_three_dim(i, &res);
-            super::engine::sample(land, &mut data, index);
+            super::engine::sample(land, &mut data, index, &mut rng);
         }
     }
 

@@ -3,7 +3,7 @@
 use arctk::{
     args,
     file::{Build, Load, Redirect, Save},
-    geom::{Mesh, MeshBuilder, Tree, TreeBuilder},
+    geom::{Grid, GridBuilder, Mesh, MeshBuilder, Tree, TreeBuilder},
     ord::Set,
     util::{banner, dir},
 };
@@ -25,6 +25,8 @@ use std::{
 struct Parameters {
     /// Adaptive mesh settings.
     tree: Redirect<TreeBuilder>,
+    /// Sampling grid settings.
+    grid: Redirect<GridBuilder>,
     /// Render runtime settings.
     sett: Redirect<Settings>,
     /// Surfaces set.
@@ -42,11 +44,11 @@ pub fn main() {
 
     let params = input(term_width, &in_dir, &params_path);
 
-    let (tree_sett, map_sett, surfs, inters) = build(term_width, &in_dir, params);
+    let (tree_sett, grid_sett, map_sett, surfs, inters) = build(term_width, &in_dir, params);
 
-    let tree = grow(term_width, tree_sett, &surfs);
+    let (tree, grid) = grow(term_width, tree_sett, grid_sett, &surfs);
 
-    let input = Landscape::new(&tree, &map_sett, &surfs, &inters);
+    let input = Landscape::new(&tree, &grid, &map_sett, &surfs, &inters);
 
     let output = mapping(term_width, &input);
 
@@ -92,13 +94,25 @@ fn build(
     term_width: usize,
     in_dir: &Path,
     params: Parameters,
-) -> (TreeBuilder, Settings, Set<Key, Mesh>, Set<Key, Interface>) {
+) -> (
+    TreeBuilder,
+    GridBuilder,
+    Settings,
+    Set<Key, Mesh>,
+    Set<Key, Interface>,
+) {
     banner::section("Building", term_width);
     banner::sub_section("Adaptive Tree Settings", term_width);
     let tree_sett = params
         .tree
         .build(in_dir)
         .expect("Failed to redirect adaptive tree settings.");
+
+    banner::sub_section("Measurement Grid Settings", term_width);
+    let grid_sett = params
+        .grid
+        .build(in_dir)
+        .expect("Failed to redirect grid settings.");
 
     banner::sub_section("Map Settings", term_width);
     let map_sett = params
@@ -120,17 +134,25 @@ fn build(
         .build(in_dir)
         .expect("Failed to redirect interfaces set.");
 
-    (tree_sett, map_sett, surfs, inters)
+    (tree_sett, grid_sett, map_sett, surfs, inters)
 }
 
 /// Grow domains.
-fn grow<'a>(term_width: usize, tree: TreeBuilder, surfs: &'a Set<Key, Mesh>) -> Tree<'a, &Key> {
+fn grow<'a>(
+    term_width: usize,
+    tree_sett: TreeBuilder,
+    grid_sett: GridBuilder,
+    surfs: &'a Set<Key, Mesh>,
+) -> (Tree<'a, &Key>, Grid) {
     banner::section("Growing", term_width);
 
     banner::sub_section("Adaptive Tree", term_width);
-    let tree = tree.build(&surfs);
+    let tree = tree_sett.build(&surfs);
 
-    tree
+    banner::sub_section("Regular Grid", term_width);
+    let grid = grid_sett.build();
+
+    (tree, grid)
 }
 
 /// Perform the mapping.
