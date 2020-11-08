@@ -47,8 +47,8 @@ pub fn single_thread(land: &Landscape) -> Data {
 #[inline]
 #[must_use]
 pub fn thread(pb: &Arc<Mutex<ProgressBar>>, land: &Landscape) -> Data {
-    // let res = *land.grid.res();
-    let data = Data::new();
+    let res = *land.sett.grid().res();
+    let data = Data::new(land.inters, res);
     // let mut data = Data::new(land.sett.grid.boundary().clone(), res);
 
     while let Some((start, end)) = {
