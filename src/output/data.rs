@@ -13,7 +13,7 @@ use std::path::Path;
 /// Cartographer output data.
 pub struct Data {
     /// Center material sample.
-    maps: Set<Key, Array3<f64>>,
+    pub maps: Set<Key, Array3<f64>>,
 }
 
 impl Data {

@@ -10,6 +10,7 @@ use arctk::{
 use arctk_attr::input;
 use cartographer::{
     input::Settings,
+    output::Data,
     parts::{Interface, Landscape},
     run::multi_thread,
     util::Key,
@@ -35,17 +36,23 @@ struct Parameters {
 /// Main function.
 pub fn main() {
     let term_width = arctk::util::term::width().unwrap_or(80);
-
     banner::title("CARTOGRAPHER", term_width);
+
     let (params_path, in_dir, out_dir) = init(term_width);
+
     let params = input(term_width, &in_dir, &params_path);
+
     let (tree_sett, map_sett, surfs, inters) = build(term_width, &in_dir, params);
+
     let tree = grow(term_width, tree_sett, &surfs);
+
     let input = Landscape::new(&tree, &map_sett, &surfs, &inters);
 
-    banner::section("Mapping", term_width);
-    let output = multi_thread(&input).expect("Failed to perform mapping.");
-    output.save(&out_dir).expect("Failed to save output data.");
+    let output = mapping(term_width, &input);
+
+    post_analysis(term_width, &output);
+
+    save(term_width, &out_dir, &output);
 
     banner::section("Finished", term_width);
 }
@@ -124,4 +131,36 @@ fn grow<'a>(term_width: usize, tree: TreeBuilder, surfs: &'a Set<Key, Mesh>) -> 
     let tree = tree.build(&surfs);
 
     tree
+}
+
+/// Perform the mapping.
+fn mapping(term_width: usize, input: &Landscape) -> Data {
+    banner::section("Mapping", term_width);
+    multi_thread(&input).expect("Failed to perform mapping.")
+}
+
+/// Review the output data.
+fn post_analysis(term_width: usize, output: &Data) {
+    banner::section("Post-Analysis", term_width);
+
+    let mut total: f64 = output.maps.map().values().map(|m| m.sum()).sum();
+    println!("{:>32} : {}", "total occupancy", total);
+
+    for (key, map) in output.maps.map() {
+        let occupancy = map.sum();
+        println!(
+            "{:>32} : {} ({}%)",
+            key,
+            occupancy,
+            occupancy / total * 100.0
+        );
+        total += occupancy;
+    }
+}
+
+/// Save the output data.
+fn save(term_width: usize, out_dir: &Path, output: &Data) {
+    banner::section("Saving", term_width);
+
+    output.save(&out_dir).expect("Failed to save output data.");
 }
