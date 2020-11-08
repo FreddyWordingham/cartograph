@@ -22,7 +22,7 @@ impl<'a> Landscape<'a> {
     /// Construct a new instance.
     #[inline]
     #[must_use]
-    pub fn new(
+    pub const fn new(
         tree: &'a Tree<'a, &Key>,
         sett: &'a Settings,
         surfs: &'a Set<Key, Mesh>,

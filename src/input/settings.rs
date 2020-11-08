@@ -46,12 +46,9 @@ impl Settings {
     /// Calculate the total number of sub-samples per cell.
     #[inline]
     #[must_use]
-    pub const fn samples_per_cell(&self) -> i32 {
-        if let Some(power) = self.super_sample_power {
-            power * power * power
-        } else {
-            1
-        }
+    pub fn samples_per_cell(&self) -> i32 {
+        self.super_sample_power
+            .map_or(1, |power| power * power * power)
     }
 
     /// Calculate the total number of sub-samples per cell.

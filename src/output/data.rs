@@ -44,7 +44,13 @@ impl Data {
 
     /// Save the maps to the given directory.
     #[inline]
-    pub fn save_maps(&self, _out_dir: &Path) -> Result<(), Error> {
+    pub fn save_maps(&self, out_dir: &Path) -> Result<(), Error> {
+        for (key, map) in self.maps.map() {
+            let p = out_dir.join(format!("{}.nc", key));
+            println!("Saving: {}", p.display());
+            map.save(&p)?;
+        }
+
         Ok(())
     }
 }
