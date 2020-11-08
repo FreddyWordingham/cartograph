@@ -11,6 +11,7 @@ use arctk_attr::input;
 use cartographer::{
     input::Settings,
     parts::{Interface, Landscape},
+    run::multi_thread,
     util::Key,
 };
 use std::{
@@ -43,7 +44,7 @@ pub fn main() {
     let input = Landscape::new(&tree, &map_sett, &surfs, &inters);
 
     banner::section("Mapping", term_width);
-    // let output = multi_thread(&input, &shader, &cam).expect("Failed to perform rendering.");
+    let _output = multi_thread(&input).expect("Failed to perform mapping.");
     // output
     //     .img
     //     .save(&out_dir.join("render.png"))
