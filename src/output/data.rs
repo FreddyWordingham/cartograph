@@ -43,6 +43,8 @@ impl Data {
     }
 
     /// Save the maps to the given directory.
+    /// # Errors
+    /// if a map can not be saved.
     #[inline]
     pub fn save_maps(&self, out_dir: &Path) -> Result<(), Error> {
         for (key, map) in self.maps.map() {
