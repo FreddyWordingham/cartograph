@@ -15,6 +15,16 @@ pub enum SuperSample {
 }
 
 impl SuperSample {
+    /// Calculate the total number of samples.
+    #[inline]
+    #[must_use]
+    pub fn num_samples(&self) -> usize {
+        match self {
+            Self::Uniform([nx, ny, nz]) => nx * ny * nz,
+            Self::Random(n) => *n,
+        }
+    }
+
     /// Determine the nth sampling position.
     #[inline]
     #[must_use]
