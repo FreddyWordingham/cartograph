@@ -12,8 +12,10 @@ use std::path::Path;
 
 /// Cartographer output data.
 pub struct Data {
-    /// Center material sample.
+    /// Material sample.
     pub maps: Set<Key, Array3<f64>>,
+    /// Problematic cells.
+    pub undetermined: Array3<f64>,
 }
 
 impl Data {
@@ -39,7 +41,10 @@ impl Data {
                 .collect(),
         );
 
-        Self { maps }
+        Self {
+            maps,
+            undetermined: Array3::zeros(res),
+        }
     }
 
     /// Save the maps to the given directory.
@@ -66,12 +71,18 @@ impl AddAssign<&Self> for Data {
             debug_assert!(l_key == r_key);
             *l_map += r_map;
         }
+
+        self.undetermined += &rhs.undetermined;
     }
 }
 
 impl Save for Data {
     #[inline]
     fn save(&self, out_dir: &Path) -> Result<(), Error> {
-        self.save_maps(out_dir)
+        self.save_maps(out_dir)?;
+
+        let p = out_dir.join("undetermined.nc");
+        println!("Saving: {}", p.display());
+        self.undetermined.save(&p)
     }
 }

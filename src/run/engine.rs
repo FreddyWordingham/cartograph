@@ -48,6 +48,8 @@ pub fn sample<R: Rng>(land: &Landscape, data: &mut Data, index: [usize; 3], mut 
                 "WARNING! Could not determine key at index: {} : {} : {}",
                 index[X], index[Y], index[Z],
             );
+
+            *data.undetermined.get_mut(index).unwrap() += weight;
         }
     }
 }
