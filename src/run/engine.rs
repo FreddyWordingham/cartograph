@@ -1,13 +1,16 @@
 //! Photon-lifetime engine function.
 
 use crate::{output::Data, parts::Landscape, util::Key};
-use arctk::geom::{Ray, Trace};
-use arctk::ord::{X, Y, Z};
+use arctk::{
+    geom::{Ray, Trace},
+    ord::{X, Y, Z},
+};
+use rand::prelude::SliceRandom;
 use rand::Rng;
 
 /// Determine what a single ray will observe.
 #[inline]
-pub fn sample<R: Rng>(land: &Landscape, data: &mut Data, index: [usize; 3], rng: &mut R) {
+pub fn sample<R: Rng>(land: &Landscape, data: &mut Data, index: [usize; 3], mut rng: &mut R) {
     let bump_dist = land.sett.bump_dist();
     let num_pos_samples = land.sett.super_sampling().num_samples();
     let num_cast_samples = land.sett.caster().num_samples();
@@ -19,7 +22,11 @@ pub fn sample<R: Rng>(land: &Landscape, data: &mut Data, index: [usize; 3], rng:
     for n in 0..num_pos_samples {
         let pos = sampler.sample(&voxel, n, rng);
 
-        for m in 0..num_cast_samples {
+        let mut found = false;
+
+        let mut order = (0..num_cast_samples).collect::<Vec<i32>>();
+        order.as_mut_slice().shuffle(&mut rng);
+        for m in order {
             let ray = caster.gen_ray(pos, m);
 
             if let Some(key) = scan(land, ray, bump_dist) {
@@ -31,9 +38,12 @@ pub fn sample<R: Rng>(land: &Landscape, data: &mut Data, index: [usize; 3], rng:
                     .get_mut(index)
                     .unwrap() += weight;
 
+                found = true;
                 break;
             }
+        }
 
+        if !found {
             println!(
                 "WARNING! Could not determine key at index: {} : {} : {}",
                 index[X], index[Y], index[Z],
