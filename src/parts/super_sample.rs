@@ -20,11 +20,11 @@ impl SuperSample {
     /// Calculate the total number of samples.
     #[inline]
     #[must_use]
-    pub fn num_samples(&self) -> usize {
-        match self {
+    pub const fn num_samples(&self) -> usize {
+        match *self {
             Self::Off => 1,
             Self::Uniform([nx, ny, nz]) => nx * ny * nz,
-            Self::Random(n) => *n,
+            Self::Random(n) => n,
         }
     }
 
@@ -32,9 +32,9 @@ impl SuperSample {
     #[inline]
     #[must_use]
     pub fn sample<R: Rng>(&self, cube: &Cube, n: usize, rng: &mut R) -> Pos3 {
-        match &self {
+        match *self {
             Self::Off => cube.centre(),
-            Self::Uniform(res) => cube.uniform_pos(&res, &linear_to_three_dim(n, &res)),
+            Self::Uniform(ref res) => cube.uniform_pos(res, &linear_to_three_dim(n, res)),
             Self::Random(..) => cube.rand_pos(rng),
         }
     }
@@ -43,10 +43,10 @@ impl SuperSample {
 impl Valid for SuperSample {
     #[inline]
     fn check(&self) -> bool {
-        match self {
+        match *self {
             Self::Off => true,
-            Self::Uniform([nx, ny, nz]) => (*nx > 0) && (*ny > 0) && (*nz > 0),
-            Self::Random(n) => *n > 0,
+            Self::Uniform([nx, ny, nz]) => (nx > 0) && (ny > 0) && (nz > 0),
+            Self::Random(n) => n > 0,
         }
     }
 }

@@ -12,10 +12,6 @@ license = "MIT OR Apache-2.0"
 documentation = "https://freddywordingham.github.io/antler"
 exclude = ["docs/", "res/"]
 
-[features]
-default = ["window"]
-window = ["minifb"]
-
 [dependencies]
 arctk = { path = "../arctk", features = ["netcdf", "terminal_size"] }
 # arctk-attr = { path = "../arctk-attr" }

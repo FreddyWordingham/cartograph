@@ -26,19 +26,19 @@ impl Caster {
     #[inline]
     #[must_use]
     pub fn gen_ray(&self, pos: Pos3, n: i32) -> Ray {
-        match self {
-            Self::Direction(dir) => Ray::new(pos, *dir),
+        match *self {
+            Self::Direction(dir) => Ray::new(pos, dir),
             Self::Target(tar) => Ray::new(pos, Dir3::new_normalize(tar - pos)),
             Self::Soft(samples, tar, alpha) => {
                 // println!("HEllos");
-                let (r, theta) = rand_circle_point(n, *samples);
+                let (r, theta) = rand_circle_point(n, samples);
                 let mut ray = Ray::new(pos, Dir3::new_normalize(tar - pos));
                 ray.rotate(r * alpha, theta);
                 ray
             }
             Self::Radiant(samples) => {
                 // println!("HEllos");
-                let (pitch, roll) = rand_sphere_point(n, *samples);
+                let (pitch, roll) = rand_sphere_point(n, samples);
                 let mut ray = Ray::new(pos, Vec3::x_axis());
                 ray.rotate(pitch, roll);
                 ray
@@ -49,12 +49,10 @@ impl Caster {
     /// Retrieve the number of potential samples.
     #[inline]
     #[must_use]
-    pub fn num_samples(&self) -> i32 {
-        match self {
-            Self::Direction(..) => 1,
-            Self::Target(..) => 1,
-            Self::Soft(samples, ..) => *samples,
-            Self::Radiant(samples) => *samples,
+    pub const fn num_samples(&self) -> i32 {
+        match *self {
+            Self::Direction(..) | Self::Target(..) => 1,
+            Self::Soft(samples, ..) | Self::Radiant(samples) => samples,
         }
     }
 }

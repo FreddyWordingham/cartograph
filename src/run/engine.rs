@@ -55,6 +55,7 @@ pub fn sample<R: Rng>(land: &Landscape, data: &mut Data, index: [usize; 3], mut 
 }
 
 /// Determine what a single ray will observe.
+#[allow(clippy::expect_used)]
 #[inline]
 #[must_use]
 pub fn scan<'a>(land: &'a Landscape, ray: Ray, bump_dist: f64) -> Option<&'a Key> {
@@ -66,19 +67,18 @@ pub fn scan<'a>(land: &'a Landscape, ray: Ray, bump_dist: f64) -> Option<&'a Key
         .dist(&ray)
         .expect("Failed to determine distance to grid boundary.");
 
-    if let Some(hit) = land.tree.observe(ray, bump_dist, bound_dist) {
+    land.tree.observe(ray, bump_dist, bound_dist).map(|hit| {
         let interface: &Key = hit.tag();
-        let (inside, outside) = land.inters.map().get(interface).expect(&format!(
-            "Entry '{}' not found in interface map.",
-            interface
-        ));
+        let &(ref inside, ref outside) = land
+            .inters
+            .map()
+            .get(interface)
+            .unwrap_or_else(|| panic!("Entry '{}' not found in interface map.", interface));
 
         if hit.side().is_inside() {
-            Some(inside)
+            inside
         } else {
-            Some(outside)
+            outside
         }
-    } else {
-        None
-    }
+    })
 }
