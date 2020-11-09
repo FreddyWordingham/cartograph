@@ -2,7 +2,7 @@
 authors = ["Freddy Wordingham <fjmw201@exeter.ac.uk>"]
 name = "cartograph"
 version = "0.1.0"
-description = "Antler rendering engine."
+description = "Datacube builder."
 repository = "https://github.com/FreddyWordingham/antler"
 readme = "README.md"
 keywords = ["rt"]
