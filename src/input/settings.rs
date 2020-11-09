@@ -1,10 +1,10 @@
-//! Mapping simulation structure.
+//! Mapping simulation settings structure.
 
 use crate::parts::{Caster, SuperSample};
 use arctk::{access, clone};
 use arctk_attr::input;
 
-/// Loadable input settings structure.
+/// Loadable input cartography settings structure.
 #[input]
 pub struct Settings {
     /// Number of samples to simulate in each thread block.
