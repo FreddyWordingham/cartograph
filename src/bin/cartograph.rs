@@ -8,7 +8,7 @@ use arctk::{
     util::{banner, dir},
 };
 use arctk_attr::input;
-use cartographer::{
+use cartograph::{
     input::Settings,
     output::Data,
     parts::{Interface, Landscape},

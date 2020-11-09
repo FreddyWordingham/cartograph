@@ -1,6 +1,6 @@
 [package]
 authors = ["Freddy Wordingham <fjmw201@exeter.ac.uk>"]
-name = "cartographer"
+name = "cartograph"
 version = "0.1.0"
 description = "Antler rendering engine."
 repository = "https://github.com/FreddyWordingham/antler"
