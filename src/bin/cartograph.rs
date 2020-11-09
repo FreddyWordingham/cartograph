@@ -145,7 +145,6 @@ fn grow<'a>(
     surfs: &'a Set<Key, Mesh>,
 ) -> (Tree<'a, &Key>, Grid) {
     banner::section("Growing", term_width);
-
     banner::sub_section("Adaptive Tree", term_width);
     let tree = tree_sett.build(&surfs);
 
