@@ -16,7 +16,7 @@ exclude = ["docs/", "res/"]
 # arctk = { path = "../arctk", features = ["netcdf", "terminal_size"] }
 # arctk-attr = { path = "../arctk-attr" }
 # arctk-proc = { path = "../arctk-proc" }
-arctk = { version = "0.12.*", features = ["netcdf", "terminal_size"] }
+arctk = { version = "0.11.1", features = ["netcdf", "terminal_size"] }
 arctk-attr = "0.2.*"
 arctk-proc = "0.2.*"
 ndarray = { version = "0.13.*", features = ["rayon"] }
