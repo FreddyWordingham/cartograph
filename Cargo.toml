@@ -13,8 +13,8 @@ documentation = "https://freddywordingham.github.io/antler"
 exclude = ["docs/", "res/"]
 
 [features]
-# default = ["window"]
-# window = ["minifb"]
+default = ["window"]
+window = ["minifb"]
 
 [dependencies]
 arctk = { path = "../arctk", features = ["netcdf", "terminal_size"] }
@@ -28,11 +28,7 @@ num_cpus = "1.13.*"
 rand = "0.7.*"
 rayon = "1.5.*"
 serde = { version = "1.0.*", features = ["derive"] }
-# minifb = { version = "0.19.*", optional = true }
-
-# [[bin]]
-# name = "cartographer-window"
-# required-features = ["window"]
+minifb = { version = "0.19.*", optional = true }
 
 [profile.dev]
 # Development profile: "cargo build".
