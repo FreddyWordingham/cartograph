@@ -3,13 +3,13 @@ authors = ["Freddy Wordingham <fjmw201@exeter.ac.uk>"]
 name = "cartograph"
 version = "0.1.0"
 description = "Datacube builder."
-repository = "https://github.com/FreddyWordingham/antler"
+repository = "https://github.com/FreddyWordingham/cartograph"
 readme = "README.md"
 keywords = ["rt"]
 categories = ["science", "simulation"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
-documentation = "https://freddywordingham.github.io/antler"
+documentation = "https://freddywordingham.github.io/cartograph"
 exclude = ["./docs/", "./input/", "./output/"]
 
 [dependencies]
