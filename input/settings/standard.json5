@@ -1,0 +1,6 @@
+{
+    block_size      : 100,
+    bump_dist       : 1.0e-4,
+    super_sampling  : { "Uniform"   : [2,2,2] },
+    caster          : { "Radiant"   : 10001 }
+}
