@@ -1,4 +1,4 @@
-//! MCRT output structure.
+//! Output structure.
 
 use crate::{parts::Interface, util::Key};
 use arctk::{
