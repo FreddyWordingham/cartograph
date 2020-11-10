@@ -1,7 +1,7 @@
 [package]
 authors = ["Freddy Wordingham <fjmw201@exeter.ac.uk>"]
 name = "cartograph"
-version = "0.1.2"
+version = "0.1.3"
 description = "Datacube builder."
 repository = "https://github.com/FreddyWordingham/cartograph"
 readme = "README.md"
