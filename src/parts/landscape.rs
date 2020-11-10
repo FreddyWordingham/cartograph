@@ -33,7 +33,7 @@ impl<'a> Landscape<'a> {
     ) -> Self {
         Self {
             tree,
-            grid,output
+            grid,
             sett,
             surfs,
             inters,
