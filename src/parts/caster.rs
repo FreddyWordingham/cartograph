@@ -30,14 +30,12 @@ impl Caster {
             Self::Direction(dir) => Ray::new(pos, dir),
             Self::Target(tar) => Ray::new(pos, Dir3::new_normalize(tar - pos)),
             Self::Soft(samples, tar, alpha) => {
-                // println!("HEllos");
                 let (r, theta) = rand_circle_point(n, samples);
                 let mut ray = Ray::new(pos, Dir3::new_normalize(tar - pos));
                 ray.rotate(r * alpha, theta);
                 ray
             }
             Self::Radiant(samples) => {
-                // println!("HEllos");
                 let (pitch, roll) = rand_sphere_point(n, samples);
                 let mut ray = Ray::new(pos, Vec3::x_axis());
                 ray.rotate(pitch, roll);
