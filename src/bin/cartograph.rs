@@ -27,7 +27,7 @@ struct Parameters {
     tree: Redirect<TreeBuilder>,
     /// Sampling grid settings.
     grid: Redirect<GridBuilder>,
-    /// Render runtime settings.
+    /// Runtime settings.
     sett: Redirect<Settings>,
     /// Surfaces set.
     surfs: Redirect<Set<Key, MeshBuilder>>,
